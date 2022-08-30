@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-	log.SetFlags(log.Llongfile)
+	log.SetFlags(log.Lshortfile)
 	ctx, cancel := context.WithCancel(context.Background())
 
 	var cmd *exec.Cmd
@@ -26,11 +26,12 @@ func main() {
 		cmd.Stderr = io.Discard
 		//cmd.Stdin = os.Stdin
 		err = cmd.Start()
-		log.Printf("started %s", cmd)
 		if err != nil {
 			cancel()
-			log.Println(err)
+			log.Printf("couldn't start %s: %v", cmd, err)
+			break
 		}
+		log.Printf("started %s", cmd)
 
 		go func(cmd *exec.Cmd, cancel context.CancelFunc) {
 			err = cmd.Wait()
